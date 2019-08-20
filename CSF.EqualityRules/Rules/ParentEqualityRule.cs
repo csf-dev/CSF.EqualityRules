@@ -3,12 +3,17 @@ using System.Collections.Generic;
 
 namespace CSF.EqualityRules.Rules
 {
-    public class ParentEqualityRule<TParent,TValue> : IGetsEqualityResult<TParent>
+    public class ParentEqualityRule<TParent,TValue> : IGetsEqualityResult<TParent>, IEqualityRule<TParent>
     {
         readonly IGetsValueFromParent<TParent,TValue> valueProvider;
-        readonly IEqualityRule<TValue> valueRule;
+        readonly EqualityRule<TValue> valueRule;
 
-        public string Name { get; set; }
+        public string Name
+        {
+            get { return valueRule.Name; }
+            set { valueRule.Name = value; }
+        }
+
         public event EventHandler<RuleCompletedEventArgs> RuleCompleted;
         public event EventHandler<RuleErroredEventArgs> RuleErrored;
 
@@ -42,7 +47,7 @@ namespace CSF.EqualityRules.Rules
         protected virtual void OnRuleCompleted(object sender, RuleCompletedEventArgs args)
         {
             args.RuleName = Name;
-            RuleCompleted?.Invoke(sender, args);
+            RuleCompleted?.Invoke(this, args);
         }
 
         protected virtual void OnRuleErrored(Exception ex)
@@ -58,7 +63,7 @@ namespace CSF.EqualityRules.Rules
         protected virtual void OnRuleErrored(object sender, RuleErroredEventArgs args)
         {
             args.RuleName = Name;
-            RuleErrored?.Invoke(sender, args);
+            RuleErrored?.Invoke(this, args);
         }
 
         public ParentEqualityRule(IGetsValueFromParent<TParent,TValue> valueProvider,
