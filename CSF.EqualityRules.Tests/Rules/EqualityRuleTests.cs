@@ -7,7 +7,7 @@ using NUnit.Framework;
 
 namespace CSF.EqualityRules.Tests.Rules
 {
-    [TestFixture]
+    [TestFixture,Parallelizable]
     public class EqualityRuleTests
     {
         [Test, AutoMoqData]

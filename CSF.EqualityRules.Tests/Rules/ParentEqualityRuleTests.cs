@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using AutoFixture.NUnit3;
 using CSF.EqualityRules.Rules;
 using Moq;
@@ -6,7 +7,7 @@ using NUnit.Framework;
 
 namespace CSF.EqualityRules.Tests.Rules
 {
-    [TestFixture]
+    [TestFixture,Parallelizable]
     public class ParentEqualityRuleTests
     {
         [Test, AutoMoqData]
@@ -26,6 +27,28 @@ namespace CSF.EqualityRules.Tests.Rules
 
             Mock.Get(rule).Verify(x => x.Equals(str1, str2), Times.Once);
             Assert.That(result, Is.True);
+        }
+
+        [Test, AutoMoqData]
+        public void Equals_raises_error_event_if_value_provider_throws_exception([Frozen] IGetsValueFromParent<EmptyClass,string> valueProvider,
+                                                                                 [Frozen] IEqualityComparer<string> rule,
+                                                                                 ParentEqualityRule<EmptyClass,string> sut,
+                                                                                 EmptyClass obj1,
+                                                                                 EmptyClass obj2,
+                                                                                 string str1,
+                                                                                 string str2)
+        {
+            Mock.Get(valueProvider).Setup(x => x.GetValue(obj1)).Throws<InvalidOperationException>();
+            Mock.Get(valueProvider).Setup(x => x.GetValue(obj2)).Returns(str2);
+            Mock.Get(rule).Setup(x => x.Equals(str1, str2)).Returns(true);
+            RuleErroredEventArgs evArgs = null;
+
+            sut.RuleErrored += (sender, args) => evArgs = args;
+
+            var result = sut.Equals(obj1, obj2);
+
+            Assert.That(result, Is.False, "Overall result");
+            Assert.That(evArgs?.Exception, Is.InstanceOf<InvalidOperationException>(), "Exception from event args");
         }
 
         [Test, AutoMoqData]
