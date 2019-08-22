@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using CSF.EqualityRules.Internal;
 
 namespace CSF.EqualityRules.Rules
 {
     public class ParentEqualityRule<TParent,TValue> : IGetsEqualityResult<TParent>, IEqualityRule<TParent>
     {
         readonly IGetsValueFromParent<TParent,TValue> valueProvider;
+        readonly IGetsEqualityResultFromRuleResults resultFactory;
+        readonly IGetsEqualityRuleResult ruleResultFactory;
         readonly EqualityRule<TValue> valueRule;
 
         public string Name
@@ -39,9 +42,10 @@ namespace CSF.EqualityRules.Rules
             return valueRule.GetHashCode(value);
         }
 
-        public EqualityResult GetEqualityResult(TParent obj)
+        public EqualityResult GetEqualityResult(TParent x, TParent y)
         {
-            throw new NotImplementedException();
+            var ruleResult = ruleResultFactory.GetResult(this, x, y);
+            return resultFactory.GetEqualityResult(new[] {ruleResult});
         }
 
         protected virtual void OnRuleCompleted(object sender, RuleCompletedEventArgs args)
@@ -67,11 +71,15 @@ namespace CSF.EqualityRules.Rules
         }
 
         public ParentEqualityRule(IGetsValueFromParent<TParent,TValue> valueProvider,
-                                  IEqualityComparer<TValue> valueComparer)
+                                  IEqualityComparer<TValue> valueComparer,
+                                  IGetsEqualityRuleResult ruleResultFactory = null,
+                                  IGetsEqualityResultFromRuleResults resultFactory = null)
         {
             if (valueComparer == null) throw new ArgumentNullException(nameof(valueComparer));
 
             this.valueProvider = valueProvider ?? throw new ArgumentNullException(nameof(valueProvider));
+            this.resultFactory = resultFactory ?? new EqualityResultFactory();
+            this.ruleResultFactory = ruleResultFactory ?? new EqualityRuleResultFactory();
             valueRule = new EqualityRule<TValue>(valueComparer);
 
             valueRule.RuleCompleted += OnRuleCompleted;
