@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CSF.EqualityRules.Internal
+namespace CSF.EqualityRules.Rules
 {
-    public class EqualityResultFactory : IGetsEqualityResultFromRuleResults
+    internal class EqualityResultFactory
     {
         public EqualityResult GetEqualityResult(params IEnumerable<EqualityRuleResult>[] ruleResults)
         {

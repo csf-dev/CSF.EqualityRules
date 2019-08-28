@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CSF.EqualityRules
 {
@@ -14,5 +15,16 @@ namespace CSF.EqualityRules
             AreEqual = areEqual;
             RuleResults = ruleResults ?? throw new ArgumentNullException(nameof(ruleResults));
         }
+
+        static EqualityResult()
+        {
+            Equal = new EqualityResult(true, Enumerable.Empty<EqualityRuleResult>().ToArray());
+        }
+
+        /// <summary>
+        /// Gets a singleton instance indicating equality.
+        /// </summary>
+        /// <value>The result instance.</value>
+        public static EqualityResult Equal { get; }
     }
 }

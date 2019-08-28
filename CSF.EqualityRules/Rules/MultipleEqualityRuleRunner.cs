@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CSF.EqualityRules.Internal;
 
 namespace CSF.EqualityRules.Rules
 {
-    public class MultipleEqualityRuleRunner<T> : IGetsEqualityResult<T>
+    public class MultipleEqualityRuleRunner<T> : IEqualityRule<T>
     {
         const int Prime1 = 17, Prime2 = 31;
 
         readonly IReadOnlyCollection<IEqualityRule<T>> rules;
-        readonly IGetsEqualityResultFromRuleResults resultFactory;
-        readonly IGetsEqualityRuleResult ruleResultFactory;
+        readonly EqualityResultFactory resultFactory;
+
+        public string Name { get; set; }
 
         public bool Equals(T x, T y) => GetEqualityResult(x, y).AreEqual;
 
@@ -25,17 +25,18 @@ namespace CSF.EqualityRules.Rules
 
         public EqualityResult GetEqualityResult(T x, T y)
         {
-            var ruleResults = rules.Select(rule => ruleResultFactory.GetResult(rule, x, y));
+            var ruleResults = rules
+                .Select(rule => rule.GetEqualityResult(x, y)?.RuleResults)
+                .Where(results => results?.Any() == true)
+                .ToArray();
             return resultFactory.GetEqualityResult(ruleResults);
         }
 
-        public MultipleEqualityRuleRunner(IEnumerable<IEqualityRule<T>> rules,
-                                          IGetsEqualityResultFromRuleResults resultFactory = null,
-                                          IGetsEqualityRuleResult ruleResultFactory = null)
+        public MultipleEqualityRuleRunner(IEnumerable<IEqualityRule<T>> rules)
         {
-            this.resultFactory = resultFactory ?? new EqualityResultFactory();
-            this.ruleResultFactory = ruleResultFactory ?? new EqualityRuleResultFactory();
             this.rules = rules?.ToArray() ?? throw new ArgumentNullException(nameof(rules));
+
+            resultFactory = new EqualityResultFactory();
         }
     }
 }

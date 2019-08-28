@@ -6,7 +6,6 @@ namespace CSF.EqualityRules
     public interface IEqualityRule<in T> : IEqualityComparer<T>
     {
         string Name { get; }
-        event EventHandler<RuleCompletedEventArgs> RuleCompleted;
-        event EventHandler<RuleErroredEventArgs> RuleErrored;
+        EqualityResult GetEqualityResult(T x, T y);
     }
 }

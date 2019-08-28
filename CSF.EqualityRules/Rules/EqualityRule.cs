@@ -6,54 +6,52 @@ namespace CSF.EqualityRules.Rules
     public class EqualityRule<T> : IEqualityRule<T>
     {
         readonly IEqualityComparer<T> comparer;
+        readonly EqualityResultFactory resultFactory;
 
         public string Name { get; set; }
-        public event EventHandler<RuleCompletedEventArgs> RuleCompleted;
-        public event EventHandler<RuleErroredEventArgs> RuleErrored;
 
-        public bool Equals(T x, T y)
+        public bool Equals(T x, T y) => GetEqualityResult(x, y).AreEqual;
+
+        public EqualityResult GetEqualityResult(T x, T y)
+        {
+            var ruleResult = GetEqualityRuleResult(x, y);
+            return resultFactory.GetEqualityResult(new[] { ruleResult });
+        }
+
+        EqualityRuleResult GetEqualityRuleResult(T x, T y)
         {
             try
             {
                 var result = comparer.Equals(x, y);
-                OnRuleCompleted(result, x, y);
-                return result;
+                return new EqualityRuleResult(Name, result, x, y);
             }
             catch (Exception e)
             {
-                OnRuleErrored(e);
-                return false;
+                return new EqualityRuleResult(Name, false, x, y, e);
             }
         }
 
-        public int GetHashCode(T obj) => comparer.GetHashCode(obj);
-
-
-        protected virtual void OnRuleCompleted(bool areEqual, object x, object y)
+        public int GetHashCode(T obj)
         {
-            var args = new RuleCompletedEventArgs
+            try
             {
-                RuleName = Name,
-                AreEqual = areEqual,
-                ValueA = x,
-                ValueB = y
-            };
-            RuleCompleted?.Invoke(this, args);
-        }
-
-        protected virtual void OnRuleErrored(Exception ex)
-        {
-            var args =  new RuleErroredEventArgs
+                return comparer.GetHashCode(obj);
+            }
+            catch(InvalidOperationException)
             {
-                RuleName = Name,
-                Exception = ex
-            };
-            RuleErrored?.Invoke(this, args);
+                throw;
+            }
+            catch(Exception e)
+            {
+                throw new InvalidOperationException($"{nameof(GetHashCode)} raised an unexpected exception.", e);
+            }
         }
 
         public EqualityRule(IEqualityComparer<T> comparer)
         {
             this.comparer = comparer ?? throw new ArgumentNullException(nameof(comparer));
+
+            resultFactory = new EqualityResultFactory();
         }
     }
 }
