@@ -11,7 +11,7 @@ namespace CSF.EqualityRules.Rules
         readonly IReadOnlyCollection<IEqualityRule<T>> rules;
         readonly EqualityResultFactory resultFactory;
 
-        public string Name { get; set; }
+        public string Name => null;
 
         public bool Equals(T x, T y) => GetEqualityResult(x, y).AreEqual;
 
@@ -26,8 +26,7 @@ namespace CSF.EqualityRules.Rules
         public EqualityResult GetEqualityResult(T x, T y)
         {
             var ruleResults = rules
-                .Select(rule => rule.GetEqualityResult(x, y)?.RuleResults)
-                .Where(results => results?.Any() == true)
+                .SelectMany(rule => rule.GetEqualityResult(x, y)?.RuleResults)
                 .ToArray();
             return resultFactory.GetEqualityResult(ruleResults);
         }

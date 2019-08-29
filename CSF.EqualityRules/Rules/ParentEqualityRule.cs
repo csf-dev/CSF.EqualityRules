@@ -1,4 +1,5 @@
 ﻿using System;
+using CSF.EqualityRules.ValueProviders;
 
 namespace CSF.EqualityRules.Rules
 {
@@ -8,7 +9,7 @@ namespace CSF.EqualityRules.Rules
         readonly IEqualityRule<TValue> valueRule;
         readonly EqualityResultFactory resultFactory;
 
-        public string Name { get; set; }
+        public string Name => valueRule.Name;
 
         public bool Equals(TParent x, TParent y) => GetEqualityResult(x, y).AreEqual;
 

@@ -1,4 +1,4 @@
-﻿namespace CSF.EqualityRules
+﻿namespace CSF.EqualityRules.ValueProviders
 {
     public interface IGetsValueFromParent<in TParent, out TValue>
     {

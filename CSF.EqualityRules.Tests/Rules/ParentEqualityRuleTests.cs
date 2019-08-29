@@ -1,5 +1,6 @@
 ﻿using AutoFixture.NUnit3;
 using CSF.EqualityRules.Rules;
+using CSF.EqualityRules.ValueProviders;
 using Moq;
 using NUnit.Framework;
 

@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace CSF.EqualityRules
+namespace CSF.EqualityRules.Rules
 {
     public class NonGenericEqualityComparerAdapter<T> : EqualityComparer<T>
     {

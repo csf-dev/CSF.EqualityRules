@@ -8,7 +8,7 @@ namespace CSF.EqualityRules.Rules
         readonly IEqualityComparer<T> comparer;
         readonly EqualityResultFactory resultFactory;
 
-        public string Name { get; set; }
+        public string Name { get; }
 
         public bool Equals(T x, T y) => GetEqualityResult(x, y).AreEqual;
 
@@ -47,9 +47,10 @@ namespace CSF.EqualityRules.Rules
             }
         }
 
-        public EqualityRule(IEqualityComparer<T> comparer)
+        public EqualityRule(IEqualityComparer<T> comparer, string name)
         {
             this.comparer = comparer ?? throw new ArgumentNullException(nameof(comparer));
+            Name = name ?? throw new ArgumentNullException(nameof(name));
 
             resultFactory = new EqualityResultFactory();
         }
