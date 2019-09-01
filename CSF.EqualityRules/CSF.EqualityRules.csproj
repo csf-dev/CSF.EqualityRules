@@ -9,4 +9,7 @@
     <EmbeddedResource Remove="Internal\**" />
     <None Remove="Internal\**" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Builders\" />
+  </ItemGroup>
 </Project>
