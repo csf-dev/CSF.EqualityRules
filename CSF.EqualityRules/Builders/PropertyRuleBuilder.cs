@@ -8,7 +8,7 @@ namespace CSF.EqualityRules.Builders
 {
     public abstract class PropertyRuleBuilder<TParent> : RuleBuilder<TParent>
     {
-        public PropertyInfo Property { get; set; }
+        public PropertyInfo Property { get; }
 
         protected PropertyRuleBuilder(PropertyInfo property)
         {
