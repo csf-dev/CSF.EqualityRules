@@ -12,7 +12,4 @@
   <ItemGroup>
     <Folder Include="Builders\" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="CSF.Reflection" Version="2.0.0" />
-  </ItemGroup>
 </Project>
