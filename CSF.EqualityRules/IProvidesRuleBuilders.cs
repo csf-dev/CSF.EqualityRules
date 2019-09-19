@@ -3,7 +3,7 @@ using CSF.EqualityRules.Builders;
 
 namespace CSF.EqualityRules
 {
-    public interface IBuildsEqualityRules<T>
+    public interface IProvidesRuleBuilders<T>
     {
         ISet<RuleBuilder<T>> RuleBuilders { get; }
     }

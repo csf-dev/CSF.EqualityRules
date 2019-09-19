@@ -8,11 +8,11 @@ namespace CSF.EqualityRules
         public static EqualityBuilder<T> ForType<T>() => new EqualityBuilder<T>();
     }
 
-    public class EqualityBuilder<T> : IBuildsEqualityRules<T>
+    public class EqualityBuilder<T> : IProvidesRuleBuilders<T>
     {
         readonly ISet<RuleBuilder<T>> ruleBuilders;
 
-        ISet<RuleBuilder<T>> IBuildsEqualityRules<T>.RuleBuilders => ruleBuilders;
+        ISet<RuleBuilder<T>> IProvidesRuleBuilders<T>.RuleBuilders => ruleBuilders;
 
         public EqualityBuilder()
         {
