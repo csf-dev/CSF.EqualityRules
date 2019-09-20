@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using CSF.EqualityRules.Builders;
 using CSF.Reflection;
 using CSF.EqualityRules.Internal;
 using System.Reflection;
-using System.Collections;
+using System.Linq;
+using CSF.EqualityRules.Rules;
 
 namespace CSF.EqualityRules
 {
@@ -15,26 +15,28 @@ namespace CSF.EqualityRules
 
         public static EqualityBuilder<TParent> ForProperty<TParent, TProp>(this EqualityBuilder<TParent> builder,
                                                                            Expression<Func<TParent, TProp>> prop,
-                                                                           IEqualityComparer<TProp> comparer = null,
+                                                                           Action<IBuildsComparerFactory<TProp>> config = null,
                                                                            string name = null)
         {
-            var ruleBuilder = new DelegatePropertyRuleBuilder<TParent, TProp>(Reflect.Property(prop), prop.Compile(), comparer)
-            {
-                Name = name
-            };
+            var comparerBuilder = builder.GetComparerFactoryBuilder<TParent, TProp>();
+            config?.Invoke(comparerBuilder);
+            var ruleBuilder = new DelegatePropertyRuleBuilder<TParent, TProp>(Reflect.Property(prop),
+                                                                              prop.Compile(),
+                                                                              comparerBuilder.Comparer);
+            if (name != null) ruleBuilder.Name = name;
             builder.AsRuleBuilderProvider().RuleBuilders.Add(ruleBuilder);
             return builder;
         }
 
         public static EqualityBuilder<TParent> ForProperty<TParent>(this EqualityBuilder<TParent> builder,
                                                                     PropertyInfo prop,
-                                                                    IEqualityComparer comparer = null,
+                                                                    Action<IBuildsComparerFactory<object>> config = null,
                                                                     string name = null)
         {
-            var ruleBuilder = new ReflectionPropertyRuleBuilder<TParent>(prop, comparer)
-            {
-                Name = name
-            };
+            var comparerBuilder = builder.GetComparerFactoryBuilder<TParent, object>();
+            config?.Invoke(comparerBuilder);
+            var ruleBuilder = new ReflectionPropertyRuleBuilder<TParent>(prop, comparerBuilder.Comparer);
+            if (name != null) ruleBuilder.Name = name;
             var ruleProvider = builder.AsRuleBuilderProvider().RuleBuilders.Add(ruleBuilder);
             return builder;
         }
@@ -45,26 +47,28 @@ namespace CSF.EqualityRules
 
         public static EqualityBuilder<TParent> ForField<TParent, TField>(this EqualityBuilder<TParent> builder,
                                                                          Expression<Func<TParent, TField>> field,
-                                                                         IEqualityComparer<TField> comparer = null,
+                                                                         Action<IBuildsComparerFactory<TField>> config = null,
                                                                          string name = null)
         {
-            var ruleBuilder = new DelegateFieldRuleBuilder<TParent, TField>(Reflect.Field(field), field.Compile(), comparer)
-            {
-                Name = name
-            };
+            var comparerBuilder = builder.GetComparerFactoryBuilder<TParent, TField>();
+            config?.Invoke(comparerBuilder);
+            var ruleBuilder = new DelegateFieldRuleBuilder<TParent, TField>(Reflect.Field(field),
+                                                                            field.Compile(),
+                                                                            comparerBuilder.Comparer);
+            if (name != null) ruleBuilder.Name = name;
             var ruleProvider = builder.AsRuleBuilderProvider().RuleBuilders.Add(ruleBuilder);
             return builder;
         }
 
         public static EqualityBuilder<TParent> ForField<TParent>(this EqualityBuilder<TParent> builder,
                                                                  FieldInfo field,
-                                                                 IEqualityComparer comparer = null,
+                                                                 Action<IBuildsComparerFactory<object>> config = null,
                                                                  string name = null)
         {
-            var ruleBuilder = new ReflectionFieldRuleBuilder<TParent>(field, comparer)
-            {
-                Name = name
-            };
+            var comparerBuilder = builder.GetComparerFactoryBuilder<TParent, object>();
+            config?.Invoke(comparerBuilder);
+            var ruleBuilder = new ReflectionFieldRuleBuilder<TParent>(field, comparerBuilder.Comparer);
+            if (name != null) ruleBuilder.Name = name;
             var ruleProvider = builder.AsRuleBuilderProvider().RuleBuilders.Add(ruleBuilder);
             return builder;
         }
@@ -74,16 +78,26 @@ namespace CSF.EqualityRules
         #region delegates
 
         public static EqualityBuilder<TParent> For<TParent, TValue>(this EqualityBuilder<TParent> builder,
+                                                                    string name,
                                                                     Func<TParent, TValue> dele,
-                                                                    IEqualityComparer<TValue> comparer = null,
-                                                                    string name = null)
+                                                                    Action<IBuildsComparerFactory<TValue>> config = null)
         {
-            var ruleBuilder = new DelegateRuleBuilder<TParent, TValue>(dele, comparer)
-            {
-                Name = name
-            };
+            var comparerBuilder = builder.GetComparerFactoryBuilder<TParent, TValue>();
+            config?.Invoke(comparerBuilder);
+            var ruleBuilder = new DelegateRuleBuilder<TParent, TValue>(dele, name, comparerBuilder.Comparer);
             var ruleProvider = builder.AsRuleBuilderProvider().RuleBuilders.Add(ruleBuilder);
             return builder;
+        }
+
+        #endregion
+
+        #region building the comparer
+
+        public static IGetsEqualityResult<T> Build<T>(this EqualityBuilder<T> builder)
+        {
+            var ruleProvider = builder.AsRuleBuilderProvider();
+            var rules = ruleProvider.RuleBuilders.SelectMany(x => x.GetRules());
+            return new MultipleEqualityRuleRunner<T>(rules);
         }
 
         #endregion

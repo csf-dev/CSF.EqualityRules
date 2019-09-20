@@ -50,7 +50,7 @@ namespace CSF.EqualityRules.Rules
         public EqualityRule(IEqualityComparer<T> comparer, string name)
         {
             this.comparer = comparer ?? throw new ArgumentNullException(nameof(comparer));
-            Name = name ?? throw new ArgumentNullException(nameof(name));
+            Name = name;
 
             resultFactory = new EqualityResultFactory();
         }

@@ -9,20 +9,19 @@ namespace CSF.EqualityRules.Builders
 {
     public class ReflectionFieldRuleBuilder<TParent> : FieldRuleBuilder<TParent>
     {
-        public IEqualityComparer<object> Comparer { get; }
+        public Func<IEqualityComparer<object>> Comparer { get; }
 
         public override IEnumerable<IEqualityRule<TParent>> GetRules()
         {
-            var fieldRule = new EqualityRule<object>(Comparer, Name);
+            var fieldRule = new EqualityRule<object>(Comparer(), Name);
             var valueProvider = new ReflectionFieldValueProvider<TParent, object>(Field);
             var parentRule = new ParentEqualityRule<TParent, object>(valueProvider, fieldRule);
             return new[] { parentRule };
         }
 
-        public ReflectionFieldRuleBuilder(FieldInfo field, IEqualityComparer comparer = null) : base(field)
+        public ReflectionFieldRuleBuilder(FieldInfo field, Func<IEqualityComparer<object>> comparer = null) : base(field)
         {
-            var genericComparer = new NonGenericEqualityComparerAdapter<object>(comparer ?? EqualityComparer<object>.Default);
-            Comparer = genericComparer;
+            Comparer = comparer ?? GetDefaultComparerFactory<object>();
         }
     }
 }

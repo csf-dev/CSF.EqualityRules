@@ -15,5 +15,6 @@
   <ItemGroup>
     <Compile Include="Internal\ActivatorServiceResolver.cs" />
     <Compile Include="Internal\EqualityBuilderExtensions.cs" />
+    <Compile Include="Internal\DefaultNonGenericComparerAdapter.cs" />
   </ItemGroup>
 </Project>
