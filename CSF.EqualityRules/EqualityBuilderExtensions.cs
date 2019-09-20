@@ -22,7 +22,7 @@ namespace CSF.EqualityRules
             {
                 Name = name
             };
-            var ruleProvider = builder.AsRuleBuilderProvider().RuleBuilders.Add(ruleBuilder);
+            builder.AsRuleBuilderProvider().RuleBuilders.Add(ruleBuilder);
             return builder;
         }
 

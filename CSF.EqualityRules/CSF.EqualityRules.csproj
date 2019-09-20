@@ -10,13 +10,10 @@
     <None Remove="Internal\**" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Builders\" />
-    <Folder Include="Internal\" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="CSF.Reflection" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Internal\ActivatorServiceResolver.cs" />
     <Compile Include="Internal\EqualityBuilderExtensions.cs" />
   </ItemGroup>
 </Project>
