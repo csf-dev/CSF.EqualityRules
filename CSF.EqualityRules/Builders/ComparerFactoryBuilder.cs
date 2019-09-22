@@ -25,6 +25,11 @@ namespace CSF.EqualityRules.Builders
             Comparer = () => comparer;
         }
 
+        public void Ignore()
+        {
+            Comparer = () => new AlwaysEqualComparer<T>();
+        }
+
         public ComparerFactoryBuilder(IResolvesServices resolver)
         {
             this.resolver = resolver ?? throw new ArgumentNullException(nameof(resolver));

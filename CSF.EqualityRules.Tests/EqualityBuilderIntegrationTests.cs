@@ -133,6 +133,76 @@ namespace CSF.EqualityRules.Tests
             Assert.That(result, Is.True);
         }
 
+        [Test, AutoMoqData]
+        public void Build_CanAutoTestAllPropertiesAndReturnTrueWhenTheyAreEqual(SampleClass one, SampleClass two)
+        {
+            var comparer = new EqualityBuilder<SampleClass>()
+                .ForAllOtherProperties()
+                .Build();
+
+            one.IntProp = 2;
+            one.StringProp = "foo";
+            two.IntProp = 2;
+            two.StringProp = "foo";
+
+            var result = comparer.Equals(one, two);
+
+            Assert.That(result, Is.True);
+        }
+
+        [Test, AutoMoqData]
+        public void Build_CanAutoTestAllPropertiesAndReturnFalseWhenOneIsNotEqual(SampleClass one, SampleClass two)
+        {
+            var comparer = new EqualityBuilder<SampleClass>()
+                .ForAllOtherProperties()
+                .Build();
+
+            one.IntProp = 2;
+            one.StringProp = "foo";
+            two.IntProp = 3;
+            two.StringProp = "foo";
+
+            var result = comparer.Equals(one, two);
+
+            Assert.That(result, Is.False);
+        }
+
+        [Test, AutoMoqData]
+        public void Build_IgnoresAPropertyViaAllOtherProperties(SampleClass one, SampleClass two)
+        {
+            var comparer = new EqualityBuilder<SampleClass>()
+                .ForProperty(x => x.IntProp)
+                .ForAllOtherProperties(c => c.Ignore())
+                .Build();
+
+            one.IntProp = 2;
+            one.StringProp = "foo";
+            two.IntProp = 2;
+            two.StringProp = "bar";
+
+            var result = comparer.Equals(one, two);
+
+            Assert.That(result, Is.True);
+        }
+
+        [Test, AutoMoqData]
+        public void Build_IgnoresAPropertyViaExplicitMention(SampleClass one, SampleClass two)
+        {
+            var comparer = new EqualityBuilder<SampleClass>()
+                .ForProperty(x => x.IntProp, c => c.Ignore())
+                .ForAllOtherProperties()
+                .Build();
+
+            one.IntProp = 2;
+            one.StringProp = "foo";
+            two.IntProp = 10;
+            two.StringProp = "foo";
+
+            var result = comparer.Equals(one, two);
+
+            Assert.That(result, Is.True);
+        }
+
         #region contained classes
 
         public class SampleClass

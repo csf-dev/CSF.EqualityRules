@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using CSF.Reflection;
 
 namespace CSF.EqualityRules.ValueProviders
 {
@@ -14,11 +15,22 @@ namespace CSF.EqualityRules.ValueProviders
         /// </summary>
         /// <param name="property">The property info</param>
         /// <returns>A delegate which gets the value</returns>
-        static Func<TParent,TValue> GetGetterDelegate(PropertyInfo property)
+        Func<TParent,TValue> GetGetterDelegate(PropertyInfo property)
+        {
+            var getGetterMethodDef = Reflect.Method<ReflectionPropertyValueProvider<TParent, TValue>>(x => x.GetObjectGetterDelegate<object>(property));
+            var getGetterMethod = (Func<PropertyInfo, Func<TParent, object>>) getGetterMethodDef
+                .GetGenericMethodDefinition()
+                .MakeGenericMethod(property.PropertyType)
+                .CreateDelegate(typeof(Func<PropertyInfo,Func<TParent,object>>), this);
+
+            return parent => (TValue) (getGetterMethod(property)(parent));
+        }
+
+        Func<TParent, object> GetObjectGetterDelegate<T>(PropertyInfo property)
         {
             var getMethod = property.GetMethod;
-            var getter = getMethod.CreateDelegate(typeof(Func<TParent,TValue>));
-            return (Func<TParent,TValue>) getter;
+            var getter = (Func<TParent, T>) getMethod.CreateDelegate(typeof(Func<TParent, T>));
+            return p => getter(p);
         }
 
         public ReflectionPropertyValueProvider(PropertyInfo property)

@@ -12,7 +12,7 @@ namespace CSF.EqualityRules.Builders
 
         Func<TParent, object> IBuildsDelegateRule<TParent>.Delegate => p => Delegate(p);
 
-        public override IEnumerable<IEqualityRule<TParent>> GetRules()
+        public override IEnumerable<IEqualityRule<TParent>> GetRules(IEnumerable<RuleBuilder<TParent>> allBuilders)
         {
             var delegateRule = new EqualityRule<TValue>(Comparer(), Name);
             var valueProvider = new DelegateValueProvider<TParent, TValue>(Delegate);

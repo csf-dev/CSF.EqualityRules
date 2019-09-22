@@ -8,5 +8,6 @@ namespace CSF.EqualityRules.Builders
         void UsingComparer<TComparer>() where TComparer : class,IEqualityComparer<TEquality>;
         void UsingComparer(Type comparerType);
         void UsingComparer(IEqualityComparer<TEquality> comparer);
+        void Ignore();
     }
 }

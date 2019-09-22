@@ -11,7 +11,7 @@ namespace CSF.EqualityRules.Builders
     {
         public Func<IEqualityComparer<object>> Comparer { get; }
 
-        public override IEnumerable<IEqualityRule<TParent>> GetRules()
+        public override IEnumerable<IEqualityRule<TParent>> GetRules(IEnumerable<RuleBuilder<TParent>> allBuilders)
         {
             var propertyRule = new EqualityRule<object>(Comparer(), Name);
             var valueProvider = new ReflectionPropertyValueProvider<TParent, object>(Property);

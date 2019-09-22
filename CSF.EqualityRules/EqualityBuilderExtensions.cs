@@ -41,6 +41,16 @@ namespace CSF.EqualityRules
             return builder;
         }
 
+        public static EqualityBuilder<TParent> ForAllOtherProperties<TParent>(this EqualityBuilder<TParent> builder,
+                                                                              Action<IBuildsComparerFactory<object>> config = null)
+        {
+            var comparerBuilder = builder.GetComparerFactoryBuilder<TParent,object>();
+            config?.Invoke(comparerBuilder);
+            var ruleBuilder = new AllPropertiesNotExplicitlyMentionedRuleBuilder<TParent>(comparerBuilder.Comparer);
+            builder.AsRuleBuilderProvider().RuleBuilders.Add(ruleBuilder);
+            return builder;
+        }
+
         #endregion
 
         #region fields
@@ -73,6 +83,16 @@ namespace CSF.EqualityRules
             return builder;
         }
 
+        public static EqualityBuilder<TParent> ForAllOtherFields<TParent>(this EqualityBuilder<TParent> builder,
+                                                                          Action<IBuildsComparerFactory<object>> config = null)
+        {
+            var comparerBuilder = builder.GetComparerFactoryBuilder<TParent, object>();
+            config?.Invoke(comparerBuilder);
+            var ruleBuilder = new AllFieldsNotExplicitlyMentionedRuleBuilder<TParent>(comparerBuilder.Comparer);
+            builder.AsRuleBuilderProvider().RuleBuilders.Add(ruleBuilder);
+            return builder;
+        }
+
         #endregion
 
         #region delegates
@@ -96,7 +116,7 @@ namespace CSF.EqualityRules
         public static IGetsEqualityResult<T> Build<T>(this EqualityBuilder<T> builder)
         {
             var ruleProvider = builder.AsRuleBuilderProvider();
-            var rules = ruleProvider.RuleBuilders.SelectMany(x => x.GetRules());
+            var rules = ruleProvider.RuleBuilders.SelectMany(x => x.GetRules(ruleProvider.RuleBuilders));
             return new MultipleEqualityRuleRunner<T>(rules);
         }
 

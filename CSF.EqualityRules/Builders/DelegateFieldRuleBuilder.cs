@@ -11,7 +11,7 @@ namespace CSF.EqualityRules.Builders
         public Func<IEqualityComparer<TField>> Comparer { get; }
         readonly Func<TParent, TField> getter;
 
-        public override IEnumerable<IEqualityRule<TParent>> GetRules()
+        public override IEnumerable<IEqualityRule<TParent>> GetRules(IEnumerable<RuleBuilder<TParent>> allBuilders)
         {
             var fieldRule = new EqualityRule<TField>(Comparer(), Name);
             var valueProvider = new DelegateValueProvider<TParent, TField>(getter);
