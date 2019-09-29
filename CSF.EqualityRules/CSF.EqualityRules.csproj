@@ -12,6 +12,8 @@
     <Description>A builder/fluent interface to quickly create an IEqualityComparer&lt;T&gt; for two arbitrary object types.  Convenient for testing value equality between objects, without large amounts of boilerplate code.</Description>
     <PackageId>CSF.EqualityRules</PackageId>
     <PackageVersion>1.0.0</PackageVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\CSF-Software-OSS.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
