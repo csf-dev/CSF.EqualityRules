@@ -1,7 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.2</TargetFramework>
+    <TargetFramework>netstandard1.0</TargetFramework>
+    <PackOnBuild>true</PackOnBuild>
+    <Authors>CSF Software Limited</Authors>
+    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/csf-dev/CSF.EqualityRules</PackageProjectUrl>
+    <Summary>Builder/fluent interface for creating IEqualityComparer&lt;T&gt;</Summary>
+    <PackageTags>equality,fluent,comparer,builder</PackageTags>
+    <Title>Equality rules</Title>
+    <Description>A builder/fluent interface to quickly create an IEqualityComparer&lt;T&gt; for two arbitrary object types.  Convenient for testing value equality between objects, without large amounts of boilerplate code.</Description>
+    <PackageId>CSF.EqualityRules</PackageId>
+    <PackageVersion>1.0.0</PackageVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -19,6 +29,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CSF.Reflection" Version="2.0.0" />
+    <PackageReference Include="NuGet.Build.Packaging" Version="0.2.0" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Internal\ActivatorServiceResolver.cs" />
