@@ -4,10 +4,19 @@ using CSF.Reflection;
 
 namespace CSF.EqualityRules.ValueProviders
 {
+    /// <summary>
+    /// Implementation of <see cref="IGetsValueFromParent{TParent, TValue}"/> which uses reflection to get a
+    /// value from a property.
+    /// </summary>
     public class ReflectionPropertyValueProvider<TParent,TValue> : IGetsValueFromParent<TParent,TValue>
     {
         readonly IGetsValueFromParent<TParent, TValue> provider;
 
+        /// <summary>
+        /// Gets the 'child' value from the parent object.
+        /// </summary>
+        /// <returns>The value.</returns>
+        /// <param name="parent">Parent.</param>
         public TValue GetValue(TParent parent) => provider.GetValue(parent);
 
         /// <summary>
@@ -33,6 +42,11 @@ namespace CSF.EqualityRules.ValueProviders
             return p => getter(p);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the
+        /// <see cref="ReflectionPropertyValueProvider{TParent, TValue}"/> class.
+        /// </summary>
+        /// <param name="property">The property.</param>
         public ReflectionPropertyValueProvider(PropertyInfo property)
         {
             if(property == null) throw new ArgumentNullException(nameof(property));
