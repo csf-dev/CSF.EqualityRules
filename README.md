@@ -22,8 +22,7 @@ var comparer = new EqualityBuilder<ASampleClass>()
   .Build();
 ```
 
-## Integrating with Dependency Injection
-The constructor for `EqualityBuilder` accepts an optional parameter of `IResolvesServices`.  The equality builder can use DI to resolve custom equality comparers (when they are chosen by type and not instance).  To do this, create an implementation of `IResolvesServices` in your own code (which should be a wrapper around your DI container's resolver) and provide it to the builder's constructor.
+## Documentation
+Full documentation is available on [the wiki for this repository].  This includes an exploration of how to add rules (including functionality not demonstrated in the example above).  It also includes a short piece on integrating with dependency injection frameworks.
 
-## Comparing collections
-If you are looking to compare two collections of objects then you may wish to look at [CSF.CollectionComparers](https://github.com/csf-dev/CSF.CollectionComparers). This is a library which provides implementations of `IEqualityComparer<T>` for some common collection-equality scenarios.
+[the wiki for this repository]: https://github.com/csf-dev/CSF.EqualityRules/wiki
