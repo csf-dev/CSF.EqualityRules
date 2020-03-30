@@ -6,7 +6,7 @@
     <PackageId>CSF.EqualityRules</PackageId>
     <Authors>craigfowler</Authors>
     <Title>Equality rules</Title>
-    <Description>A builder/fluent interface to quickly create an IEqualityComparer&lt;T&gt; for two arbitrary object types.  Convenient for testing value equality between objects, without large amounts of boilerplate code.</Description>
+    <Description>A builder/fluent interface to create a equality-tester for an arbitrary type.  An equality tester functions as an IEqualityComparer&lt;T&gt; but additionally provides more information about why objects are not equal (when they are not).</Description>
     <PackageTags>equality,fluent,comparer,builder</PackageTags>
     <ReleaseVersion>2.0.0</ReleaseVersion>
     <Version>$(ReleaseVersion)</Version>
