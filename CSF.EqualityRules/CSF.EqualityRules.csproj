@@ -1,41 +1,42 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.0</TargetFramework>
-    <PackOnBuild>true</PackOnBuild>
-    <Authors>CSF Software Limited</Authors>
-    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/csf-dev/CSF.EqualityRules</PackageProjectUrl>
-    <Summary>Builder/fluent interface for creating IEqualityComparer&lt;T&gt;</Summary>
-    <PackageTags>equality,fluent,comparer,builder</PackageTags>
-    <Title>Equality rules</Title>
-    <Description>A builder/fluent interface to quickly create an IEqualityComparer&lt;T&gt; for two arbitrary object types.  Convenient for testing value equality between objects, without large amounts of boilerplate code.</Description>
+    <TargetFrameworks>netstandard1.0;netstandard2.0;net45</TargetFrameworks>
+
     <PackageId>CSF.EqualityRules</PackageId>
-    <PackageVersion>1.0.0</PackageVersion>
+    <Authors>craigfowler</Authors>
+    <Title>Equality rules</Title>
+    <Description>A builder/fluent interface to create a equality-tester for an arbitrary type.  An equality tester functions as an IEqualityComparer&lt;T&gt; but additionally provides more information about why objects are not equal (when they are not).</Description>
+    <PackageTags>equality,fluent,comparer,builder</PackageTags>
+    <ReleaseVersion>2.0.0</ReleaseVersion>
+    <Version>$(ReleaseVersion)</Version>
+    <PackageVersion>$(ReleaseVersion)</PackageVersion>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>Copyright 2020 - CSF Software Limited</Copyright>
+    <PackageProjectUrl>https://github.com/csf-dev/CSF.EqualityRules</PackageProjectUrl>
+    <RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\CSF-Software-OSS.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DocumentationFile>bin\Debug\netstandard1.0\CSF.EqualityRules.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\$(TargetFramework)\CSF.EqualityRules.xml</DocumentationFile>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType></DebugType>
-    <DocumentationFile>bin\Release\netstandard1.0\CSF.EqualityRules.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\$(TargetFramework)\CSF.EqualityRules.xml</DocumentationFile>
   </PropertyGroup>
+    
   <ItemGroup>
-    <Compile Remove="Internal\**" />
-    <EmbeddedResource Remove="Internal\**" />
-    <None Remove="Internal\**" />
+    <Reference Include="System.Runtime" Condition="$(TargetFramework.StartsWith('net4'))" />
+    <Reference Include="System.Reflection" Condition="$(TargetFramework.StartsWith('net4'))" />
+    <Reference Include="System.Linq.Expressions" Condition="$(TargetFramework.StartsWith('net4'))" />
   </ItemGroup>
+
   <ItemGroup>
-    <PackageReference Include="CSF.Reflection" Version="2.0.0" />
-    <PackageReference Include="NuGet.Build.Packaging" Version="0.2.0" />
+    <PackageReference Include="CSF.Reflector" Version="3.0.0" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Internal\ActivatorServiceResolver.cs" />
-    <Compile Include="Internal\EqualityBuilderExtensions.cs" />
-    <Compile Include="Internal\DefaultNonGenericComparerAdapter.cs" />
-  </ItemGroup>
+    
+  <Import Project="..\Tools\EnableNet45BuildOnUnix.targets" />
 </Project>

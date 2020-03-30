@@ -40,4 +40,27 @@ namespace CSF.EqualityRules
             this.resolver = resolver ?? new ActivatorServiceResolver();
         }
     }
+
+    /// <summary>
+    /// Static functionality related to an equality builder.
+    /// </summary>
+    public static class EqualityBuilder
+    {
+        /// <summary>
+        /// A convenience method which creates an equality tester based upon a specified equality comparer.
+        /// The rule will have a single rule named "Default", which uses the comparer.
+        /// </summary>
+        /// <returns>The equality tester.</returns>
+        /// <param name="comparer">An equality comparer to convert to an equality tester.</param>
+        /// <typeparam name="T">The tested type.</typeparam>
+        public static IGetsEqualityResult<T> From<T>(IEqualityComparer<T> comparer)
+        {
+            if (comparer == null)
+                throw new System.ArgumentNullException(nameof(comparer));
+
+            return new EqualityBuilder<T>()
+                .For("Default", x => x, c => c.UsingComparer(comparer))
+                .Build();
+        }
+    }
 }
