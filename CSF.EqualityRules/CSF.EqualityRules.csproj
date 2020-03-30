@@ -35,7 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CSF.Reflection" Version="2.0.0" />
+    <PackageReference Include="CSF.Reflector" Version="3.0.0" />
   </ItemGroup>
     
   <Import Project="..\Tools\EnableNet45BuildOnUnix.targets" />
