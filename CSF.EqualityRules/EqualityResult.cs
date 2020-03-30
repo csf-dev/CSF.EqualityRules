@@ -32,6 +32,18 @@ namespace CSF.EqualityRules
             RuleResults = ruleResults ?? throw new ArgumentNullException(nameof(ruleResults));
         }
 
+        /// <summary>
+        /// Returns a <see cref="String"/> that represents the current <see cref="EqualityResult"/>.
+        /// </summary>
+        /// <returns>A <see cref="String"/> that represents the current <see cref="EqualityResult"/>.</returns>
+        public override string ToString()
+        {
+            if (AreEqual) return $"[{nameof(EqualityResult)}: Compared objects are equal]";
+
+            var failedRuleNames = RuleResults.Where(x => !x.Passed).Select(x => x.Name).ToList();
+            return $"[{nameof(EqualityResult)}: Compared objects are not equal.  Failed rules: {String.Join(", ", failedRuleNames)}]";
+        }
+
         static EqualityResult()
         {
             Equal = new EqualityResult(true, Enumerable.Empty<EqualityRuleResult>().ToArray());
